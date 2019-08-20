@@ -3,10 +3,16 @@ class Node:
         self.data = data
         self.next = next
 
-    def setData(self, new_data):
+    def get_data(self):
+        return self.data
+
+    def set_data(self, new_data):
         self.data = new_data
 
-    def setNext(self, next_node):
+    def get_next_node(self):
+        return self.next
+
+    def set_next(self, next_node):
         self.next = next_node
 
     def __str__(self):
@@ -20,13 +26,22 @@ class TreeNode:
         self.left = left
         self.right = right
 
-    def setData(self, new_data):
+    def get_data(self):
+        return self.data
+
+    def set_data(self, new_data):
         self.data = new_data
 
-    def setLeftNode(self, left_node):
+    def get_left_node(self):
+        return self.left
+
+    def set_left_node(self, left_node):
         self.left = left_node
 
-    def setRightNode(self, right_node):
+    def get_right_node(self):
+        return self.right
+
+    def set_right_node(self, right_node):
         self.right = right_node
 
     def __str__(self):
@@ -37,19 +52,7 @@ class TreeNode:
         return output
 
 def main():
-    n = Node("a")
-    print(n)
-    print(n.data)
-    print(n.next)
-    n.setNext(Node("b", None))
-    print(n.next.data)
-    n.setData("c")
-    print(n.data)
-    n.data = "dds"
-    print(n.data)
-    print(n)
-    t = TreeNode("ddd")
-    print(t)
+    print("f")
 
 if __name__ == '__main__':
     main()
