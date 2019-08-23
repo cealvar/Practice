@@ -9,7 +9,7 @@ class Node:
     def set_data(self, new_data):
         self.data = new_data
 
-    def get_next_node(self):
+    def get_next(self):
         return self.next
 
     def set_next(self, next_node):
