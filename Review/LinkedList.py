@@ -45,24 +45,96 @@ class LinkedList:
 
     def remove_first(self):
         first = self.head
-        if self.head:
+        if first:
             self.head = first.get_next()
         return first
 
     def remove_last(self):
-        end = self.tail
+        removed = self.tail
         if self.head:
             curr = self.head
-            while curr.get_next():
-                if curr.get_next == self.tail:
+            nxt = curr.get_next()
+            while nxt:
+                if nxt == self.tail:
+                    curr.set_next(None)
                     self.tail = curr
-        return end
+                    removed = nxt
+                curr = curr.get_next()
+                nxt = nxt.get_next()
+            if curr == self.head:
+                self.head = None
+                self.tail = None
+        return removed
+
+    def remove_kth_pos(self, pos):
+        removed = None
+        trailer = self.head
+        curr_pos = 2
+        while trailer and curr_pos <= pos:
+            curr = trailer.get_next()
+            if curr_pos == pos and curr:
+                nxt = curr.get_next()
+                trailer.set_next(nxt)
+                removed = curr
+                if not nxt:
+                    self.tail = trailer
+            trailer = trailer.get_next()
+            curr_pos += 1
+        if pos == 1 and self.head:
+            removed = self.head
+            self.head = self.head.get_next()
+        return removed
+
+    def search(self, data):
+        curr = self.head
+        while curr:
+            if curr.get_data() == data:
+                return curr
+            curr = curr.get_next()
+        return None
+
+    def __getitem__(self, key):
+        ''' search element at index position '''
+        curr = self.head
+        count = 0
+        while curr and isinstance(key, int) and count <= key:
+            if count == key:
+                return curr
+            curr = curr.get_next()
+            count += 1
+        return None
+    
+    def __setitem__(self, key, value):
+        ''' replace item at key with value '''
+        print(key, value)
+        if value and isinstance(key, int):
+            curr = self.head
+            curr_pos = 0
+            while curr and curr_pos <= key:
+                if curr_pos == key:
+                    curr.set_data(value)
+                curr = curr.get_next()
+                curr_pos += 1
+    
+    def __delitem__(self, key):
+        if self.head and isinstance(key, int):
+            trailer = self.head
+            curr = trailer.get_next()
+            curr_pos = 1
+            while trailer and curr_pos <= key:
+                if curr_pos == 
+    def __len__(self):
+        count = 0
+        curr = self.head
+        while curr:
+            count += 1
+            curr = curr.get_next()
+        return count
     
     def __str__(self):
         curr = self.head
         out = ""
         while curr:
-            print("dsdssd")
             if curr.get_data():
                 out += str(curr.get_data()) + " -> "
             else:
@@ -73,21 +145,14 @@ class LinkedList:
     
 def main2():
     l = LinkedList()
-    l.add_kth_pos(0, Node("a", None))
-    l.add_kth_pos(2, Node("b", None))
-    print(l)
-    print(" Adding 1")
     l.add_kth_pos(1, Node("a", None))
-    print(" Adding 2")
+    #print("Adding 2")
     l.add_kth_pos(2, Node("b", None))
-    print(" Adding 3")
+    #print("Adding 3")
     l.add_kth_pos(3, Node("c", None))
-    l.add_kth_pos(5, Node("d", None))
-    l.add_kth_pos(0, Node("e", None))
-    l.add_kth_pos(5, Node("1", None))
+    print(l['a'])
+    l[-1] = "ss"
     print(l)
-    print("DONE")
-    print(l.tail)
 
 if __name__ == '__main__':
     main2()
