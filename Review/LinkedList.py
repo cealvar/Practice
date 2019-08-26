@@ -106,7 +106,6 @@ class LinkedList:
     
     def __setitem__(self, key, value):
         ''' replace item at key with value '''
-        print(key, value)
         if value and isinstance(key, int):
             curr = self.head
             curr_pos = 0
@@ -117,12 +116,44 @@ class LinkedList:
                 curr_pos += 1
     
     def __delitem__(self, key):
+        ''' delete item at key index '''
         if self.head and isinstance(key, int):
             trailer = self.head
             curr = trailer.get_next()
             curr_pos = 1
-            while trailer and curr_pos <= key:
-                if curr_pos == 
+            while curr and curr_pos <= key:
+                nxt = curr.get_next()
+                if curr_pos == key:
+                    trailer.set_next(nxt)
+                    if not nxt:
+                        self.tail = trailer
+                trailer = trailer.get_next()
+                curr = curr.get_next()
+                curr_pos += 1
+            if key == 0:
+                self.head = self.head.get_next()
+
+    def __iter__(self):
+        curr = self.head
+        item_array = []
+        while curr:
+            item_array.append(curr.get_data())
+            curr = curr.get_next()
+        return iter(item_array)
+    
+    def __reversed__(self):
+        self.tail = self.head
+        prev = None
+        curr = self.head
+        nxt = None
+        while curr:
+            nxt = curr.get_next()
+            curr.set_next(prev)
+            prev = curr
+            curr = nxt
+        self.head = prev
+
+                
     def __len__(self):
         count = 0
         curr = self.head
@@ -133,25 +164,33 @@ class LinkedList:
     
     def __str__(self):
         curr = self.head
-        out = ""
+        out = "["
         while curr:
             if curr.get_data():
-                out += str(curr.get_data()) + " -> "
+                out += str(curr.get_data())
             else:
-                out += "null -> "
+                out += "null"
+            if curr.get_next():
+                out += ", "
             curr = curr.get_next()
-        out += "null"
+        out += "]"
         return out
+
+    def append(self, value):
+        self.head = None
     
 def main2():
     l = LinkedList()
     l.add_kth_pos(1, Node("a", None))
-    #print("Adding 2")
     l.add_kth_pos(2, Node("b", None))
-    #print("Adding 3")
     l.add_kth_pos(3, Node("c", None))
-    print(l['a'])
-    l[-1] = "ss"
+    print(l)
+    print(l)
+    for item in l:
+        print(item)
+    reversed(l)
+    print(l)
+    l.append("a")
     print(l)
 
 if __name__ == '__main__':
