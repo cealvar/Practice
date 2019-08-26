@@ -95,47 +95,56 @@ class LinkedList:
             curr = curr.get_next()
         return None
 
+    def __len__(self):
+        count = 0
+        curr = self.head
+        while curr:
+            count += 1
+            curr = curr.get_next()
+        return count
+
     def __getitem__(self, key):
         ''' search element at index position '''
-        curr = self.head
-        count = 0
-        while curr and isinstance(key, int) and count <= key:
-            if count == key:
-                return curr
-            curr = curr.get_next()
-            count += 1
+        if isinstance(key, int):
+            curr = self.head
+            count = 0
+            while curr and count <= key:
+                if count == key:
+                    return curr.get_data()
+                curr = curr.get_next()
+                count += 1
         return None
     
     def __setitem__(self, key, value):
         ''' replace item at key with value '''
-        if value and isinstance(key, int):
+        if isinstance(key, int):
             curr = self.head
             curr_pos = 0
             while curr and curr_pos <= key:
                 if curr_pos == key:
                     curr.set_data(value)
                 curr = curr.get_next()
-                curr_pos += 1
+                curr += 1
     
     def __delitem__(self, key):
         ''' delete item at key index '''
-        if self.head and isinstance(key, int):
+        if isinstance(key, int):
             trailer = self.head
-            curr = trailer.get_next()
             curr_pos = 1
-            while curr and curr_pos <= key:
-                nxt = curr.get_next()
-                if curr_pos == key:
+            while trailer and curr_pos <= key:
+                curr = trailer.get_next()
+                if curr_pos == key and curr:
+                    nxt = curr.get_next()
                     trailer.set_next(nxt)
                     if not nxt:
                         self.tail = trailer
                 trailer = trailer.get_next()
-                curr = curr.get_next()
                 curr_pos += 1
-            if key == 0:
+            if key == 0 and self.head:
                 self.head = self.head.get_next()
 
     def __iter__(self):
+        ''' returns iterator object representation of linked list '''
         curr = self.head
         item_array = []
         while curr:
@@ -144,6 +153,7 @@ class LinkedList:
         return iter(item_array)
     
     def __reversed__(self):
+        ''' reverses linked list '''
         self.tail = self.head
         prev = None
         curr = self.head
@@ -156,52 +166,34 @@ class LinkedList:
         self.head = prev
     
     def __contains__(self, item):
+        ''' implementation of membership test operators '''
         curr = self.head
         while curr:
             if curr.get_data() == item:
                 return True
             curr = curr.get_next()
         return False
-
-                
-    def __len__(self):
-        count = 0
-        curr = self.head
-        while curr:
-            count += 1
-            curr = curr.get_next()
-        return count
     
     def __str__(self):
+        ''' computes lrintable string represntation of linked list '''
         curr = self.head
         out = "["
         while curr:
-            if curr.get_data():
-                out += str(curr.get_data())
-            else:
-                out += "null"
+            out += str(curr.get_data())
+            print(curr.get_data())
             if curr.get_next():
                 out += ", "
             curr = curr.get_next()
         out += "]"
         return out
-
-    def append(self, value):
-        self.head = None
     
 def main2():
+    print("dd")
     l = LinkedList()
-    l.add_kth_pos(1, Node("a", None))
-    l.add_kth_pos(2, Node("b", None))
-    l.add_kth_pos(3, Node("c", None))
-    print(l)
-    print(l)
-    for item in l:
-        print(item)
-    reversed(l)
-    print(l)
-    l.append("a")
-    print(l)
+    l.add_kth_pos(1,"a")
+    l.add_kth_pos(2, "b")
+    l.add_kth_pos(3, None)
+    print(None in l)
 
 if __name__ == '__main__':
     main2()
