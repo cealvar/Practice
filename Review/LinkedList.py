@@ -4,44 +4,46 @@ class LinkedList:
         self.head = None
         self.tail = None
 
-    def add_first(self, node):
-        if node:
-            if self.head:
-                node.set_next(self.head)
-                self.head = node
-            else:
-                self.head = node
-                self.tail = node
-
-    def add_last(self, node):
+    def add_first(self, new_data):
+        new_node = Node(new_data)
         if self.head:
-            self.tail.set_next(node)
-            self.tail = node
+            new_node.set_next(self.head)
+            self.head = new_node
         else:
-            self.add_first(node)
+            self.head = new_node
+            self.tail = new_node
 
-    def add_kth_pos(self, pos, node):
-        if node:
-            trailer = self.head
-            curr_pos = 2
-            while trailer and curr_pos <= pos:
-                curr = trailer.get_next()
-                if curr_pos == pos:
-                    trailer.set_next(node)
-                    node.set_next(curr)
-                    if not curr:
-                        self.tail = node
-                if curr:
-                    curr = curr.get_next()
-                trailer = trailer.get_next()
-                curr_pos += 1
-            if pos == 1:
-                if self.head:
-                    node.set_next(self.head)
-                    self.head = node
-                else:
-                    self.head = node
-                    self.tail = node
+    def append(self, new_data):
+        new_node = Node(new_data)
+        if self.head:
+            self.tail.set_next(new_node)
+            self.tail = new_node
+        else:
+            self.head = new_node
+            self.tail = new_node
+
+    def add_kth_pos(self, pos, new_data):
+        new_node = Node(new_data)
+        trailer = self.head
+        curr_pos = 2
+        while trailer and curr_pos <= pos:
+            curr = trailer.get_next()
+            if curr_pos == pos:
+                trailer.set_next(new_node)
+                new_node.set_next(curr)
+                if not curr:
+                    self.tail = new_node
+            if curr:
+                curr = curr.get_next()
+            trailer = trailer.get_next()
+            curr_pos += 1
+        if pos == 1:
+            if self.head:
+                new_node.set_next(self.head)
+                self.head = new_node
+            else:
+                self.head = new_node
+                self.tail = new_node
 
     def remove_first(self):
         first = self.head
@@ -152,6 +154,14 @@ class LinkedList:
             prev = curr
             curr = nxt
         self.head = prev
+    
+    def __contains__(self, item):
+        curr = self.head
+        while curr:
+            if curr.get_data() == item:
+                return True
+            curr = curr.get_next()
+        return False
 
                 
     def __len__(self):
