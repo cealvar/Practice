@@ -10,12 +10,14 @@ class LinkedList:
 
     def append(self, new_data):
         self.list.append(new_data)
+        self.head, self.tail = self.list[0], self.list[-1]
 
     def add_kth_pos(self, pos, new_data):
-        if pos > 0 and pos <= len(self.list):
+        if pos > 0 and pos <= len(self.list) + 1:
             left = self.list[:pos-1]
             right = self.list[pos-1:]
             self.list = left + [new_data] + right
+            self.head, self.tail = self.list[0], self.list[-1]
 
     def remove_first(self):
         self.list = self.list[1:]
@@ -63,8 +65,8 @@ class LinkedList:
     def __setitem__(self, key, value):
         ''' replace item at key with value '''
         if key >= 0 and key < len(self.list):
-            self.head, self.tail = self.list[0], self.list[-1]
             self.list[key] = value
+            self.head, self.tail = self.list[0], self.list[-1]
     
     def __delitem__(self, key):
         ''' delete item at key index '''
@@ -169,12 +171,15 @@ def main():
     print("Tail: " + str(l.tail))
     print("Head: " + str(l.head))
     print(l)
+    print("deleting l[0]")
     del l[0]
     print("Tail: " + str(l.tail))
     print("Head: " + str(l.head))
+    print("deleting l[1]")
     del l[1]
     print("Tail: " + str(l.tail))
     print("Head: " + str(l.head))
+    print("deleting l[0]")
     del l[0]
     print("Tail: " + str(l.tail))
     print("Head: " + str(l.head))

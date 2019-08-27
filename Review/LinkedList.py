@@ -49,6 +49,8 @@ class LinkedList:
         first = self.head
         if first:
             self.head = first.get_next()
+            if not self.head:
+                self.tail = None
         return first
 
     def remove_last(self):
@@ -85,6 +87,8 @@ class LinkedList:
         if pos == 1 and self.head:
             removed = self.head
             self.head = self.head.get_next()
+            if not self.head:
+                self.tail = None
         return removed
 
     def search(self, data):
@@ -147,6 +151,8 @@ class LinkedList:
                 curr_pos += 1
             if key == 0 and self.head:
                 self.head = self.head.get_next()
+                if not self.head:
+                    self.tail = None
 
     def __iter__(self):
         ''' returns iterator object representation of linked list '''
@@ -254,12 +260,15 @@ def main2():
     print("Tail: " + str(l.tail))
     print("Head: " + str(l.head))
     print(l)
+    print("deleting l[0]")
     del l[0]
     print("Tail: " + str(l.tail))
     print("Head: " + str(l.head))
+    print("deleting l[1]")
     del l[1]
     print("Tail: " + str(l.tail))
     print("Head: " + str(l.head))
+    print("deleting l[0]")
     del l[0]
     print("Tail: " + str(l.tail))
     print("Head: " + str(l.head))
