@@ -1,4 +1,3 @@
-from Node import *
 class LinkedList:
     def __init__(self):
         self.list = []
@@ -20,23 +19,32 @@ class LinkedList:
 
     def remove_first(self):
         self.list = self.list[1:]
-        self.head, self.tail = self.list[0], self.list[-1]
+        if len(self.list) == 0:
+            self.head, self.tail = None, None
+        else:
+            self.head, self.tail = self.list[0], self.list[-1]
 
     def remove_last(self):
         self.list[:-1]
-        self.head, self.tail = self.list[0], self.list[-1]
+        if len(self.list) == 0:
+            self.head, self.tail = None, None
+        else:
+            self.head, self.tail = self.list[0], self.list[-1]
 
     def remove_kth_pos(self, pos):
         if pos > 0 and pos <= len(self.list):
             left = self.list[:pos-1]
             right = self.list[pos:]
             self.list = left + right
-            self.head, self.tail = self.list[0], self.list[-1]
+            if len(self.list) == 0:
+                self.head, self.tail = None, None
+            else:
+                self.head, self.tail = self.list[0], self.list[-1]
 
     def search(self, data):
-        for item in self.list:
-            if data == item.get_data():
-                return item
+        for el in self.list:
+            if data == el:
+                return el
         return None
 
     def clear(self):
@@ -48,28 +56,58 @@ class LinkedList:
 
     def __getitem__(self, key):
         ''' search element at index position '''
+        if key >= 0 and key < len(self.list):
+            return self.list[key]
+        return None
     
     def __setitem__(self, key, value):
         ''' replace item at key with value '''
+        if key >= 0 and key < len(self.list):
+            self.head, self.tail = self.list[0], self.list[-1]
+            self.list[key] = value
     
     def __delitem__(self, key):
         ''' delete item at key index '''
+        if key >= 0 and key < len(self.list):
+            left = self.list[:key]
+            right = self.list[key+1:]
+            self.list = left + right
+            if len(self.list) == 0:
+                self.head, self.tail = None, None
+            else:
+                self.head, self.tail = self.list[0], self.list[-1]
+        return None
 
     def __iter__(self):
         ''' returns iterator object representation of linked list '''
+        return iter(self.list)
     
     def __reversed__(self):
         ''' reverses linked list '''
+        for i in range(len(self.list)//2):
+            self.list[i], self.list[-1-i] = self.list[-1-i], self.list[i]
+        if len(self.list) > 0:
+            self.head, self.tail = self.list[0], self.list[-1]
     
     def __contains__(self, item):
         ''' implementation of membership test operators '''
+        for el in self.list:
+            if item == el:
+                return True
+        return False
     
     def __str__(self):
         ''' computes lrintable string represntation of linked list '''
+        out = "["
+        for i in range(len(self.list)):
+            out += str(self.list[i])
+            if i < len(self.list) - 1:
+                out += ", "
+        out += "]"
+        return out
     
-def main2():
+def main():
     l = LinkedList()
-    '''
     l.add_first("a")
     l.append("b")
     print(l)
@@ -165,8 +203,7 @@ def main2():
     print("Head: " + str(l.head))
     print(l)
     print(len(l))
-    '''
     
 
 if __name__ == '__main__':
-    main3()
+    main()
