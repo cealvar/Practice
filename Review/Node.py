@@ -16,8 +16,8 @@ class Node:
         self.next = next_node
 
     def __str__(self):
-        output = "Data: " + self.data + "\nNext: "
-        output += self.next.data if self.next else "null"
+        output = "Data: " + str(self.data) + "; Next: "
+        output += str(self.next.data) if self.next else "None"
         return output
 
 class TreeNode:
@@ -45,10 +45,10 @@ class TreeNode:
         self.right = right_node
 
     def __str__(self):
-        output = "Current Node: " + self.data + "; Left Child: "
-        output += self.left.data if self.left else "null"
+        output = "Current Node: " + str(self.data) + "; Left Child: "
+        output += str(self.left.data) if self.left else "None"
         output += "; Right Child: "
-        output += self.right.data if self.right else "null"
+        output += str(self.right.data) if self.right else "None"
         return output
 
 def main():
