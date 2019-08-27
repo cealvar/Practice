@@ -100,6 +100,7 @@ class LinkedList:
         self.tail = None
 
     def __len__(self):
+        ''' return lenght of the list '''
         count = 0
         curr = self.head
         while curr:
