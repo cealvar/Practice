@@ -6,21 +6,18 @@ class LinkedList:
 
     def add_first(self, new_data):
         new_node = Node(new_data)
-        if self.head:
-            new_node.set_next(self.head)
-            self.head = new_node
-        else:
-            self.head = new_node
+        new_node.set_next(self.head)
+        self.head = new_node
+        if not self.head:
             self.tail = new_node
 
     def append(self, new_data):
         new_node = Node(new_data)
         if self.head:
             self.tail.set_next(new_node)
-            self.tail = new_node
         else:
             self.head = new_node
-            self.tail = new_node
+        self.tail = new_node
 
     def add_kth_pos(self, pos, new_data):
         new_node = Node(new_data)
