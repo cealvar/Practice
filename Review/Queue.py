@@ -1,11 +1,11 @@
 from Node import Node
 
 class QueueArray:
-    def __init__:
+    def __init__(self):
         self.queue = []
         self.size = 0
     
-     def add(self, item):
+    def add(self, item):
         self.stack.append(item)
         self.size += 1
     

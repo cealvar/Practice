@@ -49,7 +49,7 @@ class StackList:
         return item
 
     def peek(self):
-        return self.top
+        return self.top.get_data()
     
     def is_empty(self):
         return not self.head
