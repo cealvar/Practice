@@ -1,4 +1,4 @@
-from Node import *
+from Node import Node
 class LinkedList:
     def __init__(self):
         self.head = None
@@ -7,9 +7,9 @@ class LinkedList:
     def add_first(self, new_data):
         new_node = Node(new_data)
         new_node.set_next(self.head)
-        self.head = new_node
         if not self.head:
             self.tail = new_node
+        self.head = new_node
 
     def append(self, new_data):
         new_node = Node(new_data)
@@ -194,11 +194,10 @@ class LinkedList:
         out += "]"
         return out
     
-def main2():
+def main():
     l = LinkedList()
     l.add_first("a")
     l.append("b")
-    print(l)
     l.clear()
     print("Tail: " + str(l.tail))
     print("Head: " + str(l.head))
@@ -297,4 +296,4 @@ def main2():
     
 
 if __name__ == '__main__':
-    main2()
+    main()

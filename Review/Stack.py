@@ -1,4 +1,4 @@
-from Node import *
+from Node import Node
 class StackArray:
     def __init__(self):
         self.stack = []
@@ -68,7 +68,7 @@ class StackList:
         out += "]"
         return out
 
-def main3():
+def main():
     print("Stack implemented using an array...")
     stack = StackArray()
     stack.push(1)
@@ -136,4 +136,4 @@ def main3():
     print(stack.peek())
     
 if __name__ == '__main__':
-    main3()
+    main()

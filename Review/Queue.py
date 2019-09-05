@@ -77,8 +77,8 @@ class QueueList:
         out += "]"
         return out
 
-def main4():
-    print("queue implemented using an array...")
+def main():
+    print("Queue implemented using an array...")
     queue = QueueArray()
     queue.add(1)
     queue.remove()
@@ -111,7 +111,7 @@ def main4():
     print(queue.is_empty())
     print(queue.peek())
 
-    print("\nqueue implemented using a linked list...")
+    print("\nQueue implemented using a linked list...")
     queue = QueueList()
     queue.add(1)
     queue.remove()
@@ -145,4 +145,4 @@ def main4():
     print(queue.peek())
 
 if __name__ == '__main__':
-    main4()
+    main()

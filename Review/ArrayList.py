@@ -1,4 +1,4 @@
-class LinkedList:
+class ArrayList:
     def __init__(self):
         self.list = []
         self.head = None
@@ -109,7 +109,7 @@ class LinkedList:
         return out
     
 def main():
-    l = LinkedList()
+    l = ArrayList()
     l.add_first("a")
     l.append("b")
     print(l)
