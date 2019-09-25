@@ -86,6 +86,8 @@ def main():
     print("f")
     dln = DLLNode("b")
     print(dln)
+    n = Node("c")
+    print(n)
 
 if __name__ == '__main__':
     main()
