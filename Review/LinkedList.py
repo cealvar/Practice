@@ -275,7 +275,7 @@ class DoublyLinkedList:
 
     def remove_kth_pos(self, pos):
         if self.head:
-            if self.head.get_next() == self.head:
+            if self.head.get_next() == self.head and pos == 1:
                 removed = self.head
                 self.head, self.tail = None, None
                 return removed
@@ -299,14 +299,12 @@ class DoublyLinkedList:
 
     def search(self, data):
         curr = self.head
-        if curr:
+        while curr != self.tail:
             if curr.get_data() == data:
                 return curr
             curr = curr.get_next()
-            while curr != self.head:
-                if curr.get_data() == data:
-                    return curr
-                curr = curr.get_next()
+        if curr and curr.get_data() == data:
+            return curr
         return None
 
     def clear(self):
@@ -319,7 +317,7 @@ class DoublyLinkedList:
             return 0
         count = 1
         curr = self.head
-        while curr.get_next() != self.head:
+        while curr != self.tail:
             curr = curr.get_next()
             count += 1
         return count
@@ -328,81 +326,89 @@ class DoublyLinkedList:
         ''' search element at index position '''
         if isinstance(key, int) and self.head:
             curr = self.head
-            if key == 0:
-                return curr
-            curr = curr.get_next()
-            count = 1
-            while curr != self.head:
-                if count == key:
+            curr_index = 0
+            while curr != self.tail:
+                if curr_index == key:
                     return curr.get_data()
                 curr = curr.get_next()
-                count += 1
+                curr_index += 1
+            if curr_index == key:
+                return curr.get_data()
         return None
     
     def __setitem__(self, key, value):
         ''' replace item at key with value '''
         if isinstance(key, int) and self.head:
             curr = self.head
-            if key == 0:
-                curr.set_data(value)
-            else:
+            curr_index = 0
+            while curr != self.tail:
+                if curr_index == key:
+                    curr.set_data(value)
                 curr = curr.get_next()
-                curr_pos = 1
-                while curr != self.head:
-                    if curr_pos == key:
-                        curr.set_data(value)
-                    curr = curr.get_next()
-                    curr_pos += 1
+                curr_index += 1
+            if curr_index == key:
+                curr.set_data(value)
     
     def __delitem__(self, key):
         ''' delete item at key index '''
-        if isinstance(key, int):
-            if self.head and key == 0:
-                self.head = self.head.get_next()
-                if not self.head:
-                    self.tail = self.head
-            elif self.head and self.head.get_next():
-                trailer = self.head
-                curr = self.head.get_next()
-                curr_pos = 1
-                while curr and curr_pos <= key:
-                    if curr_pos == key:
-                        trailer.set_next(curr.get_next())
-                        if not trailer.get_next():
-                            self.tail = trailer
-                    trailer = trailer.get_next()
-                    curr = curr.get_next()
-                    curr_pos += 1
+        if isinstance(key, int) and self.head:
+            if self.head == self.head.get_next() and key == 0:
+                self.head = None
+                self.tail = None
+            else:
+                size = len(self)
+                if key >= 0 and key < size:
+                    curr = self.head
+                    curr_index = 0
+                    while curr_index < key:
+                        curr = curr.get_next()
+                        curr_index += 1
+                    prev = curr.get_prev()
+                    nxt = curr.get_next()
+                    prev.set_next(nxt)
+                    nxt.set_prev(prev)
+                    if key == 0:
+                        self.head = nxt
+                    if key == size - 1:
+                        self.tail = prev
 
     def __iter__(self):
         ''' returns iterator object representation of linked list '''
         curr = self.head
         item_array = []
-        while curr:
+        if curr:
             item_array.append(curr.get_data())
             curr = curr.get_next()
+            while curr != self.head:
+                item_array.append(curr.get_data())
+                curr = curr.get_next()
         return iter(item_array)
     
     def __reversed__(self):
-        ''' reverses linked list '''
-        self.tail = self.head
-        prev = None
-        curr = self.head
-        nxt = None
-        while curr:
-            nxt = curr.get_next()
+        ''' reverses DLL '''
+        if self.head:
+            prev = self.tail
+            curr = self.head
+            nxt = self.head.get_next()
+            while curr != self.tail:
+                curr.set_prev(nxt)
+                curr.set_next(prev)
+                prev = curr
+                curr = nxt
+                nxt = nxt.get_next()
+            curr.set_prev(nxt)
             curr.set_next(prev)
-            prev = curr
-            curr = nxt
-        self.head = prev
+            self.head, self.tail = self.tail, self.head
     
     def __contains__(self, item):
         ''' implementation of membership test operators '''
         curr = self.head
-        while curr:
+        while curr != self.tail:
             if curr.get_data() == item:
                 return True
             curr = curr.get_next()
+        if curr and curr.get_data() == item:
+            return True
         return False
     
     def __str__(self):
@@ -411,101 +417,629 @@ class DoublyLinkedList:
         out = "["
         size = len(self)
         count = 0
-        while curr and count < size:
-            out += "Index " + str(count) + " -> " + "CURR: " + str(curr.get_data()) + "; PREV: " + str(curr.get_prev().get_data()) + "; NXT: " + str(curr.get_next().get_data()) + "\n"
+        while count < size:
+            out += "Index " + str(count) + " -> " + "CURR: " + str(curr.get_data()) + "; PREV: " + str(curr.get_prev().get_data()) + "; NXT: " + str(curr.get_next().get_data())
             curr = curr.get_next()
             count += 1
+            if count != size:
+                out += "\n"
         out += "]"
         return out
 
 def main():
+    print(".........................SINGLY LINKED LIST.........................")
+    l = LinkedList()
+    l.add_first("a")
+    l.append("b")
+    l.clear()
+    print("Tail: " + str(l.tail))
+    print("Head: " + str(l.head))
+    print(l)
+    l.append("c")
+    l.add_first("d")
+    print(l)
+    l.clear()
+    l.add_kth_pos(0,"A")
+    l.add_kth_pos(2, "a")
+    print(l)
+    l.remove_first()
+    l.remove_last()
+    l.remove_kth_pos(0)
+    l.remove_kth_pos(1)
+    del l[0]
+    del l[1]
+    print(l)
+    l.add_kth_pos(1, "a")
+    print(l)
+    l.remove_kth_pos(1)
+    print(l)
+    l.append(1)
+    l.add_kth_pos(2, 2)
+    l.add_kth_pos(3, 3)
+    l.add_kth_pos(1, 4)
+    l.add_kth_pos(4, 5)
+    print("Tail: " + str(l.tail))
+    print("Head: " + str(l.head))
+    print(l)
+    l.add_kth_pos(6, 6)
+    l.add_kth_pos(8, 10)
+    print("Tail: " + str(l.tail))
+    print("Head: " + str(l.head))
+    print(l)
+    l.remove_kth_pos(1)
+    l.remove_kth_pos(5)
+    l.remove_kth_pos(5)
+    l.remove_kth_pos(2)
+    print("Tail: " + str(l.tail))
+    print("Head: " + str(l.head))
+    print(l)
+    print(l.search(1))
+    print(l.search(5))
+    print(l.search(3))
+    print(l[-1])
+    print(l[0])
+    print(l[1])
+    print(l[2])
+    print(l[3])
+    l[-1] = "z"
+    l[0] = "a"
+    l[1] = "b"
+    l[2] = "c"
+    l[3] = "d"
+    print("Tail: " + str(l.tail))
+    print("Head: " + str(l.head))
+    print(l)
+    print("deleting l[0]")
+    del l[0]
+    print("Tail: " + str(l.tail))
+    print("Head: " + str(l.head))
+    print("deleting l[1]")
+    del l[1]
+    print("Tail: " + str(l.tail))
+    print("Head: " + str(l.head))
+    print("deleting l[0]")
+    del l[0]
+    print("Tail: " + str(l.tail))
+    print("Head: " + str(l.head))
+    print(l)
+    del l[0]
+    print(l)
+    print(len(l))
+    print(1 in l)
+    print("A" in l)
+    for i in l:
+        print("item: " + i)
+    l.append(1)
+    l.append(3)
+    l.append(5)
+    l.append(9)
+    l.append(-100)
+    print(-100 in l)
+    print(1 in l)
+    for i in l:
+        print("item: " + str(i))
+    print("Tail: " + str(l.tail))
+    print("Head: " + str(l.head))
+    print(l)
+    reversed(l)
+    print("Tail: " + str(l.tail))
+    print("Head: " + str(l.head))
+    print(l)
+    print(len(l))
     
-    print(".....................DOUBLY LINKED LIST.................................")
+
+
+    print("\n\n\n\n\n.........................DOUBLY LINKED LIST.........................")
+    print("\nTesting Empty Lists..........")
     dl = DoublyLinkedList()
     print(dl)
-    print("\nadding z................")
-    dl.add_kth_pos(2, "z")
+    dl.remove_first()
+    dl.remove_last()
+    dl.remove_kth_pos(0)
     print(dl)
-    print(dl.head)
-    print(dl.tail)
-    print("\nadding a................")
-    dl.add_kth_pos(1, "A")
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+    print("Searching for 'a':", dl.search("a"))
+    print("Size of DLL:", len(dl))
+    print("Getting item at index 0:", dl[0])
+    dl[0] = "a"
+    print("Setting item at index 0 to 'a'...")
     print(dl)
-    print(dl.head)
-    print(dl.tail)
-    print("\nadding b..................")
-    dl.add_kth_pos(2, "b")
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+    print("Removing item at index 0...")
+    dl.remove_kth_pos(0)
     print(dl)
-    print(dl.head)
-    print(dl.tail)
-    print("\nadding c..................")
-    dl.add_kth_pos(2, "c")
+    print("Deleting item at index 0...")
+    del dl[0]
     print(dl)
-    print(dl.head)
-    print(dl.tail)
-    print("\nadding d..................")
-    dl.add_kth_pos(1, "d")
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+    print("Beginning FOR loop...")
+    for i in dl:
+        print(i)
+    print("Ending FOR loop...")
+    print("Reversing DLL...")
+    reversed(dl)
     print(dl)
-    print(dl.head)
-    print(dl.tail)
-    print("\nadding e..................")
-    dl.add_kth_pos(4, "e")
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+    print("Checking if DLL contains 'a':", "a" in dl)
+    print("Clearing DLL")
+    dl.clear()
     print(dl)
-    print(dl.head)
-    print(dl.tail)
-    print("\nadding f..................")
-    dl.add_kth_pos(7, "e")
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+
+    print("\n\nTesting SINGLE element Lists..........")
+    print("\nAdding 'a' to beginning of DLL...")
+    dl.add_first("a")
     print(dl)
-    print(dl.head)
-    print(dl.tail)
-    print("\nadding f..................")
-    dl.add_kth_pos(3, "f")
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+    print("Deleting item at beginning of DLL...")
+    dl.remove_first()
     print(dl)
-    print(dl.head)
-    print(dl.tail)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
     
+    print("\nAppending 'a' to DLL...")
+    dl.append("a")
+    print(dl)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+    print("Deleting item at end of DLL...")
+    dl.remove_last()
+    print(dl)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
 
+    print("\nAdding 'a' to beginning of DLL...")
+    dl.add_first("a")
+    print(dl)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+    print("Removing item at position 2 of DLL...")
+    dl.remove_kth_pos(2)
+    print(dl)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+    print("Removing item at position 1 of DLL...")
+    dl.remove_kth_pos(1)
+    print(dl)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
 
-    print("\nremoving at position -1................")
+    print("\nAdding 'a' at position 1 of DLL...")
+    dl.add_kth_pos(1 ,"a")
+    print(dl)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+    print("Deleting item at index 1 of DLL...")
+    del dl[1]
+    print(dl)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+    print("Removing item at index 0 of DLL...")
+    del dl[0]
+    print(dl)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+
+    print("\nAdding 'a' to beginning of DLL...")
+    dl.add_first("a")
+    print(dl)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+    print("Searching for 'a':", dl.search("a"))
+    print("Searching for 'b':", dl.search("b"))
+    print("Size of DLL:", len(dl))
+    print("Getting item at index 0:", dl[0])
+    print("Getting item at index 1:", dl[1])
+    print("Setting item at index 1 to 'c'...")
+    dl[0] = "b"
+    print("Setting item at index 0 to 'b'...")
+    dl[0] = "b"
+    print(dl)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+    print("Beginning FOR loop...")
+    for i in dl:
+        print(i)
+    print("Ending FOR loop...")
+    print("Reversing DLL...")
+    reversed(dl)
+    print(dl)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+    print("Checking if DLL contains 'a':", "a" in dl)
+    print("Checking if DLL contains 'b':", "b" in dl)
+    print("Clearing DLL")
+    dl.clear()
+    print(dl)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+
+    print("\n\nTesting DOUBLE element Lists..........")
+    print("\nAdding 'a' to beginning of DLL...")
+    dl.add_first("a")
+    print(dl)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+    print("Adding 'b' to beginning of DLL...")
+    dl.add_first("b")
+    print(dl)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+    print("Deleting item at beginning of DLL...")
+    dl.remove_first()
+    print(dl)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+    print("Deleting item at beginning of DLL...")
+    dl.remove_first()
+    print(dl)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+
+    print("\nAppending 'a' to DLL...")
+    dl.append("a")
+    print(dl)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+    print("Appending 'b' to DLL...")
+    dl.append("b")
+    print(dl)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+    print("Deleting item at end of DLL...")
+    dl.remove_last()
+    print(dl)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+    print("Deleting item at end of DLL...")
+    dl.remove_last()
+    print(dl)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+
+    print("\nAdding 'a' to beginning of DLL...")
+    dl.add_first("a")
+    print(dl)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+    print("Appending 'b' to DLL...")
+    dl.append("b")
+    print(dl)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+    print("Removing item at position -1 of DLL...")
     dl.remove_kth_pos(-1)
     print(dl)
-    print(dl.head)
-    print(dl.tail)
-    print("\nremoving at position 7................")
-    dl.remove_kth_pos(7)
-    print(dl)
-    print(dl.head)
-    print(dl.tail)
-    print("\nremoving at position 1................")
-    dl.remove_kth_pos(1)
-    print(dl)
-    print(dl.head)
-    print(dl.tail)
-    print("\nremoving at position 3................")
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+    print("Removing item at position 3 of DLL...")
     dl.remove_kth_pos(3)
     print(dl)
-    print(dl.head)
-    print(dl.tail)
-    print("\nremoving at position 4................")
-    dl.remove_kth_pos(4)
-    print(dl)
-    print(dl.head)
-    print(dl.tail)
-    print("\nremoving at position 2................")
-    dl.remove_kth_pos(2)
-    print(dl)
-    print(dl.head)
-    print(dl.tail)
-    print("\nremoving at position 2................")
-    dl.remove_kth_pos(2)
-    print(dl)
-    print(dl.head)
-    print(dl.tail)
-    print("\nremoving at position 1................")
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+    print("Removing item at position 1 of DLL...")
     dl.remove_kth_pos(1)
     print(dl)
-    print(dl.head)
-    print(dl.tail)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+    print("Removing item at position 1 of DLL...")
+    dl.remove_kth_pos(1)
+    print(dl)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+
+    print("\nAppending 'a' to DLL...")
+    dl.append("a")
+    print(dl)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+    print("Adding 'b' to beginning of DLL...")
+    dl.add_first("b")
+    print(dl)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+    print("Removing item at position 2 of DLL...")
+    dl.remove_kth_pos(2)
+    print(dl)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+    print("Removing item at position 1 of DLL...")
+    dl.remove_kth_pos(1)
+    print(dl)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+
+    print("\nAdding 'a' at position 1 of DLL...")
+    dl.add_kth_pos(1 ,"a")
+    print(dl)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+    print("Adding 'b' at position 1 of DLL...")
+    dl.add_kth_pos(1 ,"b")
+    print(dl)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+    print("Deleting item at index -1 of DLL...")
+    del dl[-1]
+    print("Deleting item at index 2 of DLL...")
+    del dl[2]
+    print(dl)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+    print("Deleting item at index 0 of DLL...")
+    del dl[0]
+    print(dl)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+    print("Deleting item at index 0 of DLL...")
+    del dl[0]
+    print(dl)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+
+    print("\nAdding 'a' at position 1 of DLL...")
+    dl.add_kth_pos(1 ,"a")
+    print(dl)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+    print("Adding 'b' at position 2 of DLL...")
+    dl.add_kth_pos(2 ,"b")
+    print(dl)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+    print("Deleting item at index 1 of DLL...")
+    del dl[1]
+    print(dl)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+    print("Deleting item at index 0 of DLL...")
+    del dl[0]
+    print(dl)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+
+    print("\nAdding 'a' to beginning of DLL...")
+    dl.add_first("a")
+    print("Adding 'b' to beginning of DLL...")
+    dl.add_first("b")
+    print(dl)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+    print("Searching for 'a':", dl.search("a"))
+    print("Searching for 'b':", dl.search("b"))
+    print("Searching for 'c':", dl.search("c"))
+    print("Size of DLL:", len(dl))
+    print("Getting item at index 0:", dl[0])
+    print("Getting item at index 1:", dl[1])
+    print("Getting item at index 2:", dl[2])
+    print("Setting item at index 2 to 'c'...")
+    dl[2] = "b"
+    print("Setting item at index 0 to 'z'...")
+    dl[0] = "z"
+    print("Setting item at index 1 to 'x'...")
+    dl[1] = "x"
+    print(dl)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+    print("Beginning FOR loop...")
+    for i in dl:
+        print(i)
+    print("Ending FOR loop...")
+    print("Reversing DLL...")
+    reversed(dl)
+    print(dl)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+    print("Checking if DLL contains 'a':", "a" in dl)
+    print("Checking if DLL contains 'x':", "x" in dl)
+    print("Checking if DLL contains 'z':", "z" in dl)
+    print("Clearing DLL")
+    dl.clear()
+    print(dl)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+
+
+    print("\n\nTesting MANY element Lists..........")
+    print("\nAdding 'a' to beginning of DLL...")
+    dl.add_first("a")
+    print("Adding 'b' to beginning of DLL...")
+    dl.add_first("b")
+    print("Adding 'c' to beginning of DLL...")
+    dl.add_first("c")
+    print(dl)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+    print("Deleting item at beginning of DLL...")
+    dl.remove_first()
+    print(dl)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+    print("Deleting item at beginning of DLL...")
+    dl.remove_first()
+    print(dl)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+    print("Deleting item at beginning of DLL...")
+    dl.remove_first()
+    print(dl)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+
+    print("\nAppending 'a' to DLL...")
+    dl.append("a")
+    print("Appending 'b' to DLL...")
+    dl.append("b")
+    print("Appending 'c' to DLL...")
+    dl.append("c")
+    print(dl)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+    print("Deleting item at end of DLL...")
+    dl.remove_last()
+    print(dl)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+    print("Deleting item at end of DLL...")
+    dl.remove_last()
+    print(dl)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+    print("Deleting item at end of DLL...")
+    dl.remove_last()
+    print(dl)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+
+    print("\nAdding 'a' to beginning of DLL...")
+    dl.add_first("a")
+    print("Appending 'b' to DLL...")
+    dl.append("b")
+    print("Adding 'c' to beginning of DLL...")
+    dl.add_first("c")
+    print(dl)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+    print("Removing item at position -1 of DLL...")
+    dl.remove_kth_pos(-1)
+    print("Removing item at position 4 of DLL...")
+    dl.remove_kth_pos(4)
+    print(dl)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+    print("Removing item at position 2 of DLL...")
+    dl.remove_kth_pos(2)
+    print(dl)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+    print("Removing item at position 1 of DLL...")
+    dl.remove_kth_pos(1)
+    print(dl)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+    print("Removing item at position 1 of DLL...")
+    dl.remove_kth_pos(1)
+    print(dl)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+
+    print("\nAdding 'a' at position 1 of DLL...")
+    dl.add_kth_pos(1 ,"a")
+    print(dl)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+    print("Adding 'b' at position 1 of DLL...")
+    dl.add_kth_pos(1 ,"b")
+    print(dl)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+    print("Adding 'z' at position 3 of DLL...")
+    dl.add_kth_pos(3 ,"z")
+    print(dl)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+    print("Adding 'x' at position 2 of DLL...")
+    dl.add_kth_pos(2 ,"x")
+    print(dl)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+    print("Deleting item at index -1 of DLL...")
+    del dl[-1]
+    print("Deleting item at index 4 of DLL...")
+    del dl[4]
+    print(dl)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+    print("Deleting item at index 2 of DLL...")
+    del dl[2]
+    print(dl)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+    print("Deleting item at index 0 of DLL...")
+    del dl[0]
+    print(dl)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+    print("Deleting item at index 1 of DLL...")
+    del dl[1]
+    print(dl)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+    print("Deleting item at index 0 of DLL...")
+    del dl[0]
+    print(dl)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+
+    print("\nAppending 'a' to DLL...")
+    dl.append("a")
+    print(dl)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+    print("Appending 'b' to DLL...")
+    dl.append("b")
+    print(dl)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+    print("Appending 'c' to DLL...")
+    dl.append("c")
+    print(dl)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+    print("Appending 'd' to DLL...")
+    dl.append("d")
+    print(dl)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+    print("Searching for 'a':", dl.search("a"))
+    print("Searching for 'b':", dl.search("b"))
+    print("Searching for 'c':", dl.search("c"))
+    print("Searching for 'd':", dl.search("d"))
+    print("Searching for 'e':", dl.search("e"))
+    print("Size of DLL:", len(dl))
+    print("Getting item at index 0:", dl[0])
+    print("Getting item at index 1:", dl[1])
+    print("Getting item at index 2:", dl[2])
+    print("Getting item at index 3:", dl[3])
+    print("Getting item at index 4:", dl[4])
+    print("Setting item at index 0 to 'w'...")
+    dl[0] = "w"
+    print("Setting item at index 1 to 'x'...")
+    dl[1] = "x"
+    print("Setting item at index 2 to 'y'...")
+    dl[2] = "y"
+    print("Setting item at index 3 to 'z'...")
+    dl[3] = "z"
+    print("Setting item at index 4 to 'q'...")
+    dl[4] = "q"
+    print(dl)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+    print("Beginning FOR loop...")
+    for i in dl:
+        print(i)
+    print("Ending FOR loop...")
+    print("Reversing DLL...")
+    reversed(dl)
+    print(dl)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
+    print("Checking if DLL contains 'w':", "w" in dl)
+    print("Checking if DLL contains 'x':", "x" in dl)
+    print("Checking if DLL contains 'y':", "y" in dl)
+    print("Checking if DLL contains 'z':", "z" in dl)
+    print("Checking if DLL contains 'q':", "q" in dl)
+    print("Clearing DLL")
+    dl.clear()
+    print(dl)
+    print("Head:", dl.head)
+    print("Tail:", dl.tail)
 
 if __name__ == '__main__':
     main()
